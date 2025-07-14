@@ -1,0 +1,8 @@
+
+{
+    "exec": "uvicorn main:app",
+    "ext": "py",
+    "ignore": ["__pycache__", "*.log"]
+  }
+  
+  
