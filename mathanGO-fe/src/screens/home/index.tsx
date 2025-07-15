@@ -101,15 +101,27 @@ export default function Home() {
   }, []);
 
   const renderLatexToCanvas = (expression: string, answer: string) => {
-    const spacedExpression = expression.replace(/([a-z])([A-Z])/g, "$1 $2");
-    const latex = `\\(\\LARGE{\\text{${spacedExpression}} = ${answer}}\\)`;
-    setLatexExpression([...latexExpression, latex]);
-    const canvas = canvaRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-  };
+  const spacedExpression = expression.replace(/([a-z])([A-Z])/g, "$1 $2");
+  const spacedAnswer = answer.replace(/([a-z])([A-Z])/g, "$1 $2");
+
+  const escapeLatex = (str: string) =>
+    str.replace(/([#$%&~_^\\{}])/g, '\\$1');
+
+  const safeExpr = escapeLatex(spacedExpression);
+  const safeAnswer = escapeLatex(spacedAnswer);
+
+  const latex = `\\(\\LARGE{\\text{${safeExpr}} = \\text{${safeAnswer}}}\\)`;
+
+  // Update state
+  setLatexExpression((prev) => [...prev, latex]);
+
+  const canvas = canvaRef.current;
+  if (canvas) {
+    const ctx = canvas.getContext("2d");
+    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+};
+
 
   const sendData = async () => {
     const canvas = canvaRef.current;
